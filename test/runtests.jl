@@ -26,70 +26,6 @@ import AstroImages: _float, render
         end
     end
 end
-
-@testset "FITS and images 1" begin
-    fname1 = tempname()* ".fits"
-    try
-        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
-                  Float32, Float64]
-            data = reshape(T[1:100;], 5, 20)
-            FITS(fname1, "w") do f1
-                write(f1, data)
-            end
-            @test load(fname1) == data
-            @test load(fname1, (1, 1)) == (data, data)
-            img = AstroImage(fname1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
-        end
-    finally
-        rm(fname1, force=true)
-    end
-end
-
-
-@testset "FITS and images 2" begin
-    fname1 = tempname()* ".fits"
-    try
-        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
-                  Float32, Float64]
-            data = reshape(T[1:100;], 5, 20)
-            FITS(fname1, "w") do f1
-                write(f1, data)
-            end
-            @test load(fname1) == data
-            @test load(fname1, (1, 1)) == (data, data)
-            img = AstroImage(fname1, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
-        end
-    finally
-        rm(fname1, force=true)
-    end
-end
-
-@testset "FITS and images 3" begin
-    fname1 = tempname()* ".fits"
-    try
-        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
-                  Float32, Float64]
-            data = reshape(T[1:100;], 5, 20)
-            FITS(fname1, "w") do f1
-                write(f1, data)
-            end
-            @test load(fname1) == data
-            @test load(fname1, (1, 1)) == (data, data)
-            img = AstroImage(Gray, fname1, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
-        end
-    finally
-        rm(fname1, force=true)
-    end
-end
-
-
-
 @testset "default handler" begin
     fname4 = tempname() * ".fits"
     try
@@ -129,4 +65,33 @@ end
         rm(fname4, force=true)
     end
 end
+
+@testset "FITS and images 1" begin
+    fname1 = tempname()* ".fits"
+    try
+        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
+                  Float32, Float64]
+            data = reshape(T[1:100;], 5, 20)
+            FITS(fname1, "w") do f1
+                write(f1, data)
+            end
+            @test load(fname1) == data
+            @test load(fname1, (1, 1)) == (data, data)
+            img = AstroImage(fname1)
+            rendered_img = render(img)
+            @test iszero(minimum(rendered_img))
+            
+            img = AstroImage(fname1, 1)
+            rendered_img = render(img)
+            @test iszero(minimum(rendered_img))
+            
+            img = AstroImage(Gray, fname1, 1)
+            rendered_img = render(img)
+            @test iszero(minimum(rendered_img))
+        end
+    finally
+        rm(fname1, force=true)
+    end
+end
+
 include("plots.jl")
