@@ -28,9 +28,9 @@ import AstroImages: _float, render
 end
 
 @testset "FITS and images" begin
-    fname = tempname() * ".fits"
     for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
               Float32, Float64]
+	fname = tempname() * ".fits"
         data = reshape(T[1:100;], 5, 20)
         FITS(fname, "w") do f
             write(f, data)
@@ -51,8 +51,8 @@ end
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
         @test convert(Matrix{Gray}, img) == rendered_img
+	rm(fname, force=true)
     end
-    rm(fname, force=true)
 end
 
 
