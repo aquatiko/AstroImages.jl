@@ -40,8 +40,8 @@ end
         img = AstroImage(fname)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
+	rm(fname, force=true)
     end
-    rm(fname, force=true)
 end
 
 
@@ -58,8 +58,8 @@ end
         img = AstroImage(fname, 1)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
+	rm(fname, force=true)
     end
-    rm(fname, force=true)
 end
 
 @testset "FITS and images 3" begin
@@ -75,8 +75,8 @@ end
         img = AstroImage(Gray, fname, 1)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
+	rm(fname, force=true)
     end
-    rm(fname, force=true)
 end
 
 
