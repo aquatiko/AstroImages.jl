@@ -28,73 +28,73 @@ import AstroImages: _float, render
 end
 
 @testset "FITS and images 1" begin
-    fname = "tmp1.fits"
+    fname1 = "tmp1.fits"
     for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
               Float32, Float64]
         data = reshape(T[1:100;], 5, 20)
-        FITS(fname, "w") do f
-            write(f, data)
+        FITS(fname1, "w") do f1
+            write(f1, data)
         end
-        @test load(fname) == data
-        @test load(fname, (1, 1)) == (data, data)
-        img = AstroImage(fname)
+        @test load(fname1) == data
+        @test load(fname1, (1, 1)) == (data, data)
+        img = AstroImage(fname1)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
-	rm(fname, force=true)
+	rm(fname1, force=true)
     end
 end
 
 
 @testset "FITS and images 2" begin
-    fname = "tmp2.fits"
+    fname2 = "tmp2.fits"
     for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
               Float32, Float64]
         data = reshape(T[1:100;], 5, 20)
-        FITS(fname, "w") do f
-            write(f, data)
+        FITS(fname2, "w") do f2
+            write(f2, data)
         end
-        @test load(fname) == data
-        @test load(fname, (1, 1)) == (data, data)
-        img = AstroImage(fname, 1)
+        @test load(fname2) == data
+        @test load(fname2, (1, 1)) == (data, data)
+        img = AstroImage(fname2, 1)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
-	rm(fname, force=true)
+	rm(fname2, force=true)
     end
 end
 
 @testset "FITS and images 3" begin
-    fname = "tmp3.fits"
+    fname3 = "tmp3.fits"
     for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
               Float32, Float64]
         data = reshape(T[1:100;], 5, 20)
-        FITS(fname, "w") do f
-            write(f, data)
+        FITS(fname3, "w") do f3
+            write(f3, data)
         end
-        @test load(fname) == data
-        @test load(fname, (1, 1)) == (data, data)
-        img = AstroImage(Gray, fname, 1)
+        @test load(fname3) == data
+        @test load(fname3, (1, 1)) == (data, data)
+        img = AstroImage(Gray, fname3, 1)
         rendered_img = render(img)
         @test iszero(minimum(rendered_img))
-	rm(fname, force=true)
+	rm(fname3, force=true)
     end
 end
 
 
 
 @testset "default handler" begin
-    fname1 = tempname() * ".fits"
+    fname4 = tempname() * ".fits"
     @testset "less dimensions than 2" begin
         data = rand(2)
-        FITS(fname1, "w") do f
-            write(f, data)
+        FITS(fname4, "w") do f4
+            write(f4, data)
         end
-        @test_throws ErrorException AstroImage(fname1)
+        @test_throws ErrorException AstroImage(fname4)
     end
-    rm(fname1, force = true)
+    rm(fname4, force = true)
 
-    fname2 = tempname() * ".fits"
+    fname4 = tempname() * ".fits"
     @testset "no ImageHDU" begin
-        f = FITS(fname2, "w")
+        f4 = FITS(fname4, "w")
         ## Binary table
         indata = Dict{String, Array}()
         i = length(indata) + 1
@@ -109,12 +109,12 @@ end
         indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
         # test writing
-        write(f, indata; varcols=["vcol", "VCOL"])
+        write(f4, indata; varcols=["vcol", "VCOL"])
 
-        @test_throws MethodError AstroImage(f)
-	close(f)
+        @test_throws MethodError AstroImage(f4)
+	close(f4)
     end
-    rm(fname2, force = true)
+    rm(fname4, force = true)
 end
 include("plots.jl")
 
