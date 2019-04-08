@@ -27,10 +27,10 @@ import AstroImages: _float, render
     end
 end
 
-@testset "FITS and images" begin
+@testset "FITS and images 1" begin
+    fname = tempname() * ".fits"
     for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
               Float32, Float64]
-	fname = tempname() * ".fits"
         data = reshape(T[1:100;], 5, 20)
         FITS(fname, "w") do f
             write(f, data)
@@ -38,22 +38,47 @@ end
         @test load(fname) == data
         @test load(fname, (1, 1)) == (data, data)
         img = AstroImage(fname)
-        rendered_img = render(img)
+        rendered_img = colorview(img)
         @test iszero(minimum(rendered_img))
-        @test convert(Matrix{Gray}, img) == rendered_img
-
-	img = AstroImage(fname, 1)
-        rendered_img = render(img)
-        @test iszero(minimum(rendered_img))
-        @test convert(Matrix{Gray}, img) == rendered_img
-        
-        img = AstroImage(Gray, fname, 1)
-        rendered_img = render(img)
-        @test iszero(minimum(rendered_img))
-        @test convert(Matrix{Gray}, img) == rendered_img
-	rm(fname, force=true)
     end
+    rm(fname, force=true)
 end
+
+
+@testset "FITS and images 2" begin
+    fname = tempname() * ".fits"
+    for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
+              Float32, Float64]
+        data = reshape(T[1:100;], 5, 20)
+        FITS(fname, "w") do f
+            write(f, data)
+        end
+        @test load(fname) == data
+        @test load(fname, (1, 1)) == (data, data)
+        img = AstroImage(fname, 1)
+        rendered_img = colorview(img)
+        @test iszero(minimum(rendered_img))
+    end
+    rm(fname, force=true)
+end
+
+@testset "FITS and images 3" begin
+    fname = tempname() * ".fits"
+    for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
+              Float32, Float64]
+        data = reshape(T[1:100;], 5, 20)
+        FITS(fname, "w") do f
+            write(f, data)
+        end
+        @test load(fname) == data
+        @test load(fname, (1, 1)) == (data, data)
+        img = AstroImage(Gray, fname, 1)
+        rendered_img = colorview(img)
+        @test iszero(minimum(rendered_img))
+    end
+    rm(fname, force=true)
+end
+
 
 
 @testset "default handler" begin
