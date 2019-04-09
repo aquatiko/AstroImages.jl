@@ -36,6 +36,16 @@ fname = tempname() * ".fits"
                 @test_throws MethodError AstroImage(f4)
             end
         end
+        
+        @testset "AstroImage file opening ways"
+                data = rand(2,2)
+                FITS(fname, "w") do f4
+                write(f4, data)
+                @test AstroImage(f4, 1) isa AstroImage
+                @test AstroImage(Gray ,f4, 1) isa AstroImage
+            end
+            
+        end
 end
 
 
@@ -75,9 +85,6 @@ end
             img = AstroImage(fname)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
-                
-            @test AstroImage(fname, 1) isa AstroImage
-            @test AstroImage(Gray, fname, 1) isa AstroImage
     end
 end
 
