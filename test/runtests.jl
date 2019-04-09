@@ -71,14 +71,6 @@ end
             img = AstroImage(fname)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
-            
-            img = AstroImage(fname, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
-            
-            img = AstroImage(Gray, fname, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
     end
 end
 
