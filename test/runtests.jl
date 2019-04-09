@@ -75,36 +75,9 @@ end
             img = AstroImage(fname)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
-    end
-end
-
-@testset "FITS and images 2" begin
-        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
-                  Float32, Float64]
-            data = reshape(T[1:100;], 5, 20)
-            FITS(fname, "w") do f1
-                write(f1, data)
-            end
-            @test load(fname) == data
-            @test load(fname, (1, 1)) == (data, data)
-            img = AstroImage(fname, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
-    end
-end
-
-@testset "FITS and images 3" begin
-        for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
-                  Float32, Float64]
-            data = reshape(T[1:100;], 5, 20)
-            FITS(fname, "w") do f1
-                write(f1, data)
-            end
-            @test load(fname) == data
-            @test load(fname, (1, 1)) == (data, data)
-            img = AstroImage(Gray, fname, 1)
-            rendered_img = render(img)
-            @test iszero(minimum(rendered_img))
+                
+            @test AstroImage(fname, 1) isa AstroImage
+            @test AstroImage(Gray, fname, 1) isa AstroImage
     end
 end
 
