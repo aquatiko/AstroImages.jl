@@ -3,7 +3,7 @@ using Test
 
 import AstroImages: _float, render
 @testset "default handler" begin
-    fname4 = tempname() * ".fits"
+        fname4 = tempname() * ".fits"
         @testset "less dimensions than 2" begin
             data = rand(2)
             FITS(fname4, "w") do f4
@@ -32,7 +32,6 @@ import AstroImages: _float, render
 
             @test_throws MethodError AstroImage(f4)
         end
-    end
 end
 
 
