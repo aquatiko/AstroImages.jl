@@ -78,7 +78,7 @@ end
     end
 end
 
-@testset "FITS and images 1" begin
+@testset "FITS and images 2" begin
         for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
                   Float32, Float64]
             data = reshape(T[1:100;], 5, 20)
@@ -93,7 +93,7 @@ end
     end
 end
 
-@testset "FITS and images 1" begin
+@testset "FITS and images 3" begin
         for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
                   Float32, Float64]
             data = reshape(T[1:100;], 5, 20)
