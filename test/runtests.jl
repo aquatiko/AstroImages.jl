@@ -2,18 +2,18 @@ using AstroImages, FITSIO, Images, Random
 using Test
 
 import AstroImages: _float, render
+fname = tempname() * ".fits"
 @testset "default handler" begin
-        fname4 = tempname() * ".fits"
         @testset "less dimensions than 2" begin
             data = rand(2)
-            FITS(fname4, "w") do f4
+            FITS(fname, "w") do f4
                 write(f4, data)
             end
-            @test_throws ErrorException AstroImage(fname4)
+            @test_throws ErrorException AstroImage(fname)
         end
 
         @testset "no ImageHDU" begin
-            f4 = FITS(fname4, "w")
+            f4 = FITS(fname, "w")
             ## Binary table
             indata = Dict{String, Array}()
             i = length(indata) + 1
@@ -60,30 +60,25 @@ end
 end
 
 @testset "FITS and images" begin
-    fname1 = tempname()* ".fits"
-    try
         for T in [UInt8, Int8, UInt16, Int16, UInt32, Int32, Int64,
                   Float32, Float64]
             data = reshape(T[1:100;], 5, 20)
-            FITS(fname1, "w") do f1
+            FITS(fname, "w") do f1
                 write(f1, data)
             end
-            @test load(fname1) == data
-            @test load(fname1, (1, 1)) == (data, data)
-            img = AstroImage(fname1)
+            @test load(fname) == data
+            @test load(fname, (1, 1)) == (data, data)
+            img = AstroImage(fname)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
             
-            img = AstroImage(fname1, 1)
+            img = AstroImage(fname, 1)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
             
-            img = AstroImage(Gray, fname1, 1)
+            img = AstroImage(Gray, fname, 1)
             rendered_img = render(img)
             @test iszero(minimum(rendered_img))
-        end
-    finally
-        rm(fname1, force=true)
     end
 end
 
