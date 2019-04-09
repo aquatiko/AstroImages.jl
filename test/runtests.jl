@@ -2,6 +2,11 @@ using AstroImages, FITSIO, Images, Random
 using Test
 
 import AstroImages: _float, render
+
+using AstroImages, FITSIO, Images, Random
+using Test
+
+import AstroImages: _float, render
 fname = tempname() * ".fits"
 @testset "default handler" begin
         @testset "less dimensions than 2" begin
@@ -13,7 +18,6 @@ fname = tempname() * ".fits"
         end
 
         @testset "no ImageHDU" begin
-            f4 = FITS(fname, "w")
             ## Binary table
             indata = Dict{String, Array}()
             i = length(indata) + 1
@@ -27,10 +31,10 @@ fname = tempname() * ".fits"
             indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
             indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
-            # test writing
-            write(f4, indata; varcols=["vcol", "VCOL"])
-
-            @test_throws MethodError AstroImage(f4)
+            FITS(fname, "w") do f4
+                write(f4, indata; varcols=["vcol", "VCOL"])
+                @test_throws MethodError AstroImage(f4)
+            end
         end
 end
 
@@ -74,4 +78,4 @@ end
     end
 end
 
-include("plots.jl")
+
