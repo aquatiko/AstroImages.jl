@@ -37,15 +37,14 @@ fname = tempname() * ".fits"
             end
         end
         
-        @testset "AstroImage file opening ways"
+        @testset "AstroImage file opening ways" begin
                 data = rand(2,2)
                 FITS(fname, "w") do f4
                 write(f4, data)
                 @test AstroImage(f4, 1) isa AstroImage
                 @test AstroImage(Gray ,f4, 1) isa AstroImage
             end
-            
-        end
+       end
 end
 
 
