@@ -53,7 +53,7 @@ end
         FITS(fname, "w") do f
             write(f, data)
         end
-        @test_throws ErrorException AstroImage(fname1)
+        @test_throws ErrorException AstroImage(fname)
     end
 
     @testset "no ImageHDU" begin
