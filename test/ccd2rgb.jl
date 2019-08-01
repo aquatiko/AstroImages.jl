@@ -32,7 +32,20 @@ end
     linear_ans = load(joinpath("data","ccd2rgb.jld"), "linear")
     asinh_ans = load(joinpath("data","ccd2rgb.jld"), "asinh")
 
-    @test isapprox(red.(linear_res), red.(linear_ans),nans = true, rtol = 1e-7)
+    function check_diff(arr1,arr2,rtol)
+        count = 0
+        for i in 1:size(arr1)[1]
+            for j in 1:size(arr1)[2]
+                if !isapprox(arr1[i,j],arr2[i,j],nans =  true, rtol = rtol)
+                    @info i,j,arr1[i,j],arr2[i,j], abs(arr1[i,j]-arr2[i,j])/max(arr1[i,j],arr2[i,j])
+                    count += 1
+                end
+            end
+        end
+        return iszero(count)
+    end
+
+    @test check_diff(red.(linear_res), red.(linear_ans),1e-7)
     @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 1e-7)
     @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 1e-7)
 
