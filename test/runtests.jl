@@ -150,6 +150,7 @@ end
     @test length(img.data) == 2
     @test img.data[1] == data1
     @test img.data[2] == data2
+    rm(fname, force = true)
 end
 
 @testset "multi wcs AstroImage" begin
@@ -182,6 +183,7 @@ end
     @test length(img.wcs) == 2
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
+    rm(fname, force = true)
 end
 
 @testset "multi file AstroImage" begin
@@ -234,6 +236,9 @@ end
     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
     @test eltype(eltype(img.data)) == Int
+    rm(fname1, force = true)
+    rm(fname2, force = true)
+    rm(fname3, force = true)
 end
 
 include("plots.jl")
