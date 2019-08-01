@@ -21,7 +21,7 @@ end
     download_dep("http://chandra.harvard.edu/photo/2009/casa/fits/casa_4.0-6.0keV.fits", "casa_4.0-6.0keV.fits",
                 "15e90a14515c121c2817e97b255c604ad019c9c2340fda4fb6c5c3da55e1b0c2")
     download_dep("https://bintray.com/aquatiko/AstroImages.jl/download_file?file_path=ccd2rgb.jld","ccd2rgb.jld",
-                "165ea09841c017a236c5938f6ed07e4f4fb80ee89d22f7b4bd3ac1923fe20564")
+                "81d96742e13c07306cd8a1104ca9d6d1d67262a379e8e22a86ae14f392194a6a")
         
     r = FITS(joinpath("data","casa_0.5-1.5keV.fits"))[1]
     b = FITS(joinpath("data","casa_1.5-3.0keV.fits"))[1]
@@ -32,11 +32,11 @@ end
     linear_ans = load(joinpath("data","ccd2rgb.jld"), "linear")
     asinh_ans = load(joinpath("data","ccd2rgb.jld"), "asinh")
 
-    @test isapprox(red.(linear_res), red.(linear_ans), nans = true, atol = 1e-4)
-    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, atol = 1e-4)
-    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, atol = 1e-4)
+    @test isapprox(red.(linear_res), red.(linear_ans),nans = true, rtol = 1e-7)
+    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 1e-7)
+    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 1e-7)
 
-    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, atol = 1e-4)
-    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, atol = 1e-4)
-    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, atol = 1e-4)
+    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 1e-7)
+    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 1e-7)
+    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 1e-7)
 end
