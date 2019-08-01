@@ -117,12 +117,12 @@ end
         indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
         indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
-        FITS(fname, "w") do f
+        FITS("tmp.fits", "w") do f
             write(f, indata; varcols=["vcol", "VCOL"])
             write(f, rand(2, 2))
         end
 
-        @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage(fname) isa AstroImage
+        @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage("tmp.fits") isa AstroImage
     end
     rm(fname, force = true)
 end
