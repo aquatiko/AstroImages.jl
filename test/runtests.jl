@@ -42,7 +42,7 @@ end
         rendered_img = colorview(img)
         @test iszero(minimum(rendered_img))
     end
-    rm(fname, force = true)
+    rm(fname)
 end
 
 @testset "Control contrast" begin
@@ -117,14 +117,14 @@ end
         indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
         indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
-        FITS("tmp.fits", "w") do f
+        FITS(fname, "w") do f
             write(f, indata; varcols=["vcol", "VCOL"])
             write(f, rand(2, 2))
         end
 
-        @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage("tmp.fits") isa AstroImage
+        @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage(fname) isa AstroImage
     end
-    rm(fname, force = true)
+    rm(fname)
 end
 
 @testset "Utility functions" begin
@@ -150,7 +150,7 @@ end
     @test length(img.data) == 2
     @test img.data[1] == data1
     @test img.data[2] == data2
-    rm(fname, force = true)
+    rm(fname)
 end
 
 @testset "multi wcs AstroImage" begin
@@ -183,7 +183,7 @@ end
     @test length(img.wcs) == 2
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
-    rm(fname, force = true)
+    rm(fname)
 end
 
 @testset "multi file AstroImage" begin
@@ -236,9 +236,9 @@ end
     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
     @test eltype(eltype(img.data)) == Int
-    rm(fname1, force = true)
-    rm(fname2, force = true)
-    rm(fname3, force = true)
+    rm(fname1)
+    rm(fname2)
+    rm(fname3)
 end
 
 include("plots.jl")
