@@ -42,7 +42,7 @@ end
         rendered_img = colorview(img)
         @test iszero(minimum(rendered_img))
     end
-    rm(fname)
+    #rm(fname)
 end
 
 @testset "Control contrast" begin
@@ -59,73 +59,73 @@ end
     @test brightness_contrast(AstroImage(M)) isa Widgets.Widget{:manipulate,Any}
 end
 
-# @testset "default handler" begin
-#     fname = tempname() * ".fits"
-#     @testset "less dimensions than 2" begin
-#         data = rand(2)
-#         FITS(fname, "w") do f
-#             write(f, data)
-#         end
-#         @test_throws ErrorException AstroImage(fname)
-#     end
+@testset "default handler" begin
+    fname = tempname() * ".fits"
+    @testset "less dimensions than 2" begin
+        data = rand(2)
+        FITS(fname, "w") do f
+            write(f, data)
+        end
+        @test_throws ErrorException AstroImage(fname)
+    end
 
-#     @testset "no ImageHDU" begin
-#         ## Binary table
-#         indata = Dict{String, Array}()
-#         i = length(indata) + 1
-#         indata["col$i"] = [randstring(10) for j=1:20]  # ASCIIString column
-#         i += 1
-#         indata["col$i"] = ones(Bool, 20)  # Bool column
-#         i += 1
-#         indata["col$i"] = reshape([1:40;], (2, 20))  # vector Int64 column
-#         i += 1
-#         indata["col$i"] = [randstring(5) for j=1:2, k=1:20]  # vector ASCIIString col
-#         indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
-#         indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
+    @testset "no ImageHDU" begin
+        ## Binary table
+        indata = Dict{String, Array}()
+        i = length(indata) + 1
+        indata["col$i"] = [randstring(10) for j=1:20]  # ASCIIString column
+        i += 1
+        indata["col$i"] = ones(Bool, 20)  # Bool column
+        i += 1
+        indata["col$i"] = reshape([1:40;], (2, 20))  # vector Int64 column
+        i += 1
+        indata["col$i"] = [randstring(5) for j=1:2, k=1:20]  # vector ASCIIString col
+        indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
+        indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
-#         FITS(fname, "w") do f
-#             write(f, indata; varcols=["vcol", "VCOL"])
-#             @test_throws MethodError AstroImage(f)
-#         end
-#     end
+        FITS(fname, "w") do f
+            write(f, indata; varcols=["vcol", "VCOL"])
+            @test_throws MethodError AstroImage(f)
+        end
+    end
 
-#     @testset "Opening AstroImage in different ways" begin
-#         data = rand(2,2)
-#         wcs = WCSTransform(2;)
-#         FITS(fname, "w") do f
-#             write(f, data)
-#         end
-#         @test AstroImage(fname, 1) isa AstroImage
-#         @test AstroImage(Gray ,fname, 1) isa AstroImage
-#         @test AstroImage(Gray, FITS(fname), 1) isa AstroImage
-#         @test AstroImage(data, wcs) isa AstroImage
-#         @test AstroImage((data,data), (wcs,wcs)) isa AstroImage
-#         @test AstroImage(Gray, data, wcs) isa AstroImage
-#     end
+    @testset "Opening AstroImage in different ways" begin
+        data = rand(2,2)
+        wcs = WCSTransform(2;)
+        FITS(fname, "w") do f
+            write(f, data)
+        end
+        @test AstroImage(fname, 1) isa AstroImage
+        @test AstroImage(Gray ,fname, 1) isa AstroImage
+        @test AstroImage(Gray, FITS(fname), 1) isa AstroImage
+        @test AstroImage(data, wcs) isa AstroImage
+        @test AstroImage((data,data), (wcs,wcs)) isa AstroImage
+        @test AstroImage(Gray, data, wcs) isa AstroImage
+    end
 
-#     @testset "Image HDU is not at 1st position" begin
-#         ## Binary table
-#         indata = Dict{String, Array}()
-#         i = length(indata) + 1
-#         indata["col$i"] = [randstring(10) for j=1:20]  # ASCIIString column
-#         i += 1
-#         indata["col$i"] = ones(Bool, 20)  # Bool column
-#         i += 1
-#         indata["col$i"] = reshape([1:40;], (2, 20))  # vector Int64 column
-#         i += 1
-#         indata["col$i"] = [randstring(5) for j=1:2, k=1:20]  # vector ASCIIString col
-#         indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
-#         indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
+    @testset "Image HDU is not at 1st position" begin
+        ## Binary table
+        indata = Dict{String, Array}()
+        i = length(indata) + 1
+        indata["col$i"] = [randstring(10) for j=1:20]  # ASCIIString column
+        i += 1
+        indata["col$i"] = ones(Bool, 20)  # Bool column
+        i += 1
+        indata["col$i"] = reshape([1:40;], (2, 20))  # vector Int64 column
+        i += 1
+        indata["col$i"] = [randstring(5) for j=1:2, k=1:20]  # vector ASCIIString col
+        indata["vcol"] = [randstring(j) for j=1:20]  # variable length column
+        indata["VCOL"] = [collect(1.:j) for j=1.:20.] # variable length
 
-#         FITS(fname, "w") do f
-#             write(f, indata; varcols=["vcol", "VCOL"])
-#             write(f, rand(2, 2))
-#         end
+        FITS(fname, "w") do f
+            write(f, indata; varcols=["vcol", "VCOL"])
+            write(f, rand(2, 2))
+        end
 
-#         @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage(fname) isa AstroImage
-#     end
-#     rm(fname)
-# end
+        @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage(fname) isa AstroImage
+    end
+    #rm(fname)
+end
 
 @testset "Utility functions" begin
    @test size(AstroImage((rand(10,10), rand(10,10)))) == ((10,10), (10,10))
@@ -150,7 +150,7 @@ end
     @test length(img.data) == 2
     @test img.data[1] == data1
     @test img.data[2] == data2
-    rm(fname)
+    #rm(fname)
 end
 
 @testset "multi wcs AstroImage" begin
@@ -183,7 +183,7 @@ end
     @test length(img.wcs) == 2
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
-    rm(fname)
+    #rm(fname)
 end
 
 @testset "multi file AstroImage" begin
@@ -236,9 +236,9 @@ end
     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
     @test eltype(eltype(img.data)) == Int
-    rm(fname1)
-    rm(fname2)
-    rm(fname3)
+    #rm(fname1)
+    #rm(fname2)
+    #rm(fname3)
 end
 
 include("plots.jl")
