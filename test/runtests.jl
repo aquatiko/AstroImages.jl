@@ -42,7 +42,7 @@ end
         rendered_img = colorview(img)
         @test iszero(minimum(rendered_img))
     end
-    #rm(fname)
+    rm(fname, force = true)
 end
 
 @testset "Control contrast" begin
@@ -124,7 +124,7 @@ end
 
         @test @test_logs (:info, "Image was loaded from HDU 3") AstroImage(fname) isa AstroImage
     end
-    #rm(fname)
+    rm(fname, force = true)
 end
 
 @testset "Utility functions" begin
@@ -150,12 +150,11 @@ end
     @test length(img.data) == 2
     @test img.data[1] == data1
     @test img.data[2] == data2
-    #rm(fname)
+    rm(fname, force = true)
 end
 
 @testset "multi wcs AstroImage" begin
     fname = tempname() * ".fits"
-    f = FITS(fname, "w")
     inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
                         "HISTORY"],
                        ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
@@ -170,9 +169,10 @@ end
                         "this is a history"])
 
     indata = reshape(Float32[1:100;], 5, 20)
-    write(f, indata; header=inhdr)
-    write(f, indata; header=inhdr)
-    close(f)
+    FITS(fname, "w") do f
+        write(f, indata; header=inhdr)
+        write(f, indata; header=inhdr)
+    end
 
     img = AstroImage(fname, (1,2))
     @test length(img.wcs) == 2
@@ -183,12 +183,10 @@ end
     @test length(img.wcs) == 2
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
-    #rm(fname)
+    rm(fname,force = true)
 end
 
 @testset "multi file AstroImage" begin
-    fname1 = tempname() * ".fits"
-    f = FITS(fname1, "w")
     inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
                         "HISTORY"],
                     ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
@@ -202,21 +200,23 @@ end
                         "this is a comment",
                         "this is a history"])
 
+    fname1 = tempname() * ".fits"
     indata1 = reshape(Int64[1:100;], 5, 20)
-    write(f, indata1; header=inhdr)
-    close(f)
+    FITS(fname1, "w") do f
+        write(f, indata1; header=inhdr)
+    end
 
     fname2 = tempname() * ".fits"
-    f = FITS(fname2, "w")
     indata2 = reshape(Int[1:100;], 5, 20)
-    write(f, indata2; header=inhdr)
-    close(f)
+    FITS(fname2, "w") do f
+        write(f, indata2; header=inhdr)
+    end
 
     fname3 = tempname() * ".fits"
-    f = FITS(fname3, "w")
     indata3 = reshape(Int[1:100;], 5, 20)
-    write(f, indata3; header=inhdr)
-    close(f)
+    FITS(fname3, "w") do f
+        write(f, indata3; header=inhdr)
+    end
 
     img = AstroImage((fname1, fname2, fname3))
 
@@ -236,9 +236,9 @@ end
     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
     @test eltype(eltype(img.data)) == Int
-    #rm(fname1)
-    #rm(fname2)
-    #rm(fname3)
+    rm(fname1, force = true)
+    rm(fname2, force = true)
+    rm(fname3, force = true)
 end
 
 include("plots.jl")
