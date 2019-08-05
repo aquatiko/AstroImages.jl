@@ -134,124 +134,124 @@ end
    @test length(AstroImage((rand(10,10), rand(10,10)))) == 2
 end
 
-@testset "multi image AstroImage" begin
-    data1 = rand(10,10)
-    data2 = rand(10,10)
-    fname = tempname() * ".fits"
-    FITS(fname, "w") do f
-        write(f, data1)
-        write(f, data2)
-    end
+# @testset "multi image AstroImage" begin
+#     data1 = rand(10,10)
+#     data2 = rand(10,10)
+#     fname = tempname() * ".fits"
+#     FITS(fname, "w") do f
+#         write(f, data1)
+#         write(f, data2)
+#     end
 
-    img = AstroImage(fname, (1,2))
-    @test length(img.data) == 2
-    @test img.data[1] == data1
-    @test img.data[2] == data2
+#     img = AstroImage(fname, (1,2))
+#     @test length(img.data) == 2
+#     @test img.data[1] == data1
+#     @test img.data[2] == data2
 
-    f = FITS(fname)
-    img = AstroImage(Gray, f, (1,2))
-    @test length(img.data) == 2
-    @test img.data[1] == data1
-    @test img.data[2] == data2
-    close(f)
-    rm(fname, force = true)
-end
+#     f = FITS(fname)
+#     img = AstroImage(Gray, f, (1,2))
+#     @test length(img.data) == 2
+#     @test img.data[1] == data1
+#     @test img.data[2] == data2
+#     close(f)
+#     rm(fname, force = true)
+# end
 
-@testset "multi wcs AstroImage" begin
-    fname = tempname() * ".fits"
-    inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
-                        "HISTORY"],
-                       ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
-                       ["",
-                        "",
-                        "",
-                        "floating point keyword",
-                        "",
-                        "boolean keyword",
-                        "string value",
-                        "this is a comment",
-                        "this is a history"])
+# @testset "multi wcs AstroImage" begin
+#     fname = tempname() * ".fits"
+#     inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
+#                         "HISTORY"],
+#                        ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
+#                        ["",
+#                         "",
+#                         "",
+#                         "floating point keyword",
+#                         "",
+#                         "boolean keyword",
+#                         "string value",
+#                         "this is a comment",
+#                         "this is a history"])
 
-    indata = reshape(Float32[1:100;], 5, 20)
-    FITS(fname, "w") do f
-        write(f, indata; header=inhdr)
-        write(f, indata; header=inhdr)
-    end
+#     indata = reshape(Float32[1:100;], 5, 20)
+#     FITS(fname, "w") do f
+#         write(f, indata; header=inhdr)
+#         write(f, indata; header=inhdr)
+#     end
 
-    img = AstroImage(fname, (1,2))
-    @test length(img.wcs) == 2
-    @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
-    @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
+#     img = AstroImage(fname, (1,2))
+#     @test length(img.wcs) == 2
+#     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
+#     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
 
-    f = FITS(fname)
-    img = AstroImage(Gray, f, (1,2))
-    @test length(img.wcs) == 2
-    @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
-    @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
-    close(f)
-    GC.gc()
-    rm(fname,force = true)
-end
+#     f = FITS(fname)
+#     img = AstroImage(Gray, f, (1,2))
+#     @test length(img.wcs) == 2
+#     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
+#     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
+#     close(f)
+#     GC.gc()
+#     rm(fname,force = true)
+# end
 
-@testset "multi file AstroImage" begin
-    inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
-                        "HISTORY"],
-                    ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
-                    ["",
-                        "",
-                        "",
-                        "floating point keyword",
-                        "",
-                        "boolean keyword",
-                        "string value",
-                        "this is a comment",
-                        "this is a history"])
+# @testset "multi file AstroImage" begin
+#     inhdr = FITSHeader(["CTYPE1", "CTYPE2", "RADESYS", "FLTKEY", "INTKEY", "BOOLKEY", "STRKEY", "COMMENT",
+#                         "HISTORY"],
+#                     ["RA---TAN", "DEC--TAN", "UNK", 1.0, 1, true, "string value", nothing, nothing],
+#                     ["",
+#                         "",
+#                         "",
+#                         "floating point keyword",
+#                         "",
+#                         "boolean keyword",
+#                         "string value",
+#                         "this is a comment",
+#                         "this is a history"])
 
-    fname1 = tempname() * ".fits"
-    indata1 = reshape(Int64[1:100;], 5, 20)
-    FITS(fname1, "w") do f
-        write(f, indata1; header=inhdr)
-    end
+#     fname1 = tempname() * ".fits"
+#     indata1 = reshape(Int64[1:100;], 5, 20)
+#     FITS(fname1, "w") do f
+#         write(f, indata1; header=inhdr)
+#     end
 
-    fname2 = tempname() * ".fits"
-    indata2 = reshape(Int[1:100;], 5, 20)
-    FITS(fname2, "w") do f
-        write(f, indata2; header=inhdr)
-    end
+#     fname2 = tempname() * ".fits"
+#     indata2 = reshape(Int[1:100;], 5, 20)
+#     FITS(fname2, "w") do f
+#         write(f, indata2; header=inhdr)
+#     end
 
-    fname3 = tempname() * ".fits"
-    indata3 = reshape(Int[1:100;], 5, 20)
-    FITS(fname3, "w") do f
-        write(f, indata3; header=inhdr)
-    end
+#     fname3 = tempname() * ".fits"
+#     indata3 = reshape(Int[1:100;], 5, 20)
+#     FITS(fname3, "w") do f
+#         write(f, indata3; header=inhdr)
+#     end
 
-    img = AstroImage((fname1, fname2, fname3))
+#     img = AstroImage((fname1, fname2, fname3))
 
-    @test length(img.data) == length(img.wcs) == 3
-    @test img.data[1] == indata1
-    @test img.data[2] == indata2
-    @test img.data[3] == indata3
-    @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
-        WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
-    @test eltype(eltype(img.data)) == Int
+#     @test length(img.data) == length(img.wcs) == 3
+#     @test img.data[1] == indata1
+#     @test img.data[2] == indata2
+#     @test img.data[3] == indata3
+#     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
+#         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
+#     @test eltype(eltype(img.data)) == Int
 
-    f1 = FITS(fname1)
-    f2 = FITS(fname2)
-    f3 = FITS(fname3)
-    img = AstroImage(Gray, (f1, f2, f3), (1,1,1))
-    @test length(img.data) == length(img.wcs) == 3
-    @test img.data[1] == indata1
-    @test img.data[2] == indata2
-    @test img.data[3] == indata3
-    @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
-        WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(f1[1], String))[1])
-    @test eltype(eltype(img.data)) == Int
-    close(f1)
-    close(f2)
-    close(f3)
-    rm(fname1, force = true)
-    rm(fname2, force = true)
-    rm(fname3, force = true)
-end
+#     f1 = FITS(fname1)
+#     f2 = FITS(fname2)
+#     f3 = FITS(fname3)
+#     img = AstroImage(Gray, (f1, f2, f3), (1,1,1))
+#     @test length(img.data) == length(img.wcs) == 3
+#     @test img.data[1] == indata1
+#     @test img.data[2] == indata2
+#     @test img.data[3] == indata3
+#     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
+#         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(f1[1], String))[1])
+#     @test eltype(eltype(img.data)) == Int
+#     close(f1)
+#     close(f2)
+#     close(f3)
+#     rm(fname1, force = true)
+#     rm(fname2, force = true)
+#     rm(fname3, force = true)
+# end
 
 include("plots.jl")
