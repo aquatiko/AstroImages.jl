@@ -95,12 +95,14 @@ end
         FITS(fname, "w") do f
             write(f, data)
         end
+        f = FITS(fname)
         @test AstroImage(fname, 1) isa AstroImage
         @test AstroImage(Gray ,fname, 1) isa AstroImage
-        @test AstroImage(Gray, FITS(fname), 1) isa AstroImage
+        @test AstroImage(Gray, f, 1) isa AstroImage
         @test AstroImage(data, wcs) isa AstroImage
         @test AstroImage((data,data), (wcs,wcs)) isa AstroImage
         @test AstroImage(Gray, data, wcs) isa AstroImage
+        close(f)
     end
 
     @testset "Image HDU is not at 1st position" begin
@@ -146,10 +148,12 @@ end
     @test img.data[1] == data1
     @test img.data[2] == data2
 
-    img = AstroImage(Gray, FITS(fname), (1,2))
+    f = FITS(fname)
+    img = AstroImage(Gray, f, (1,2))
     @test length(img.data) == 2
     @test img.data[1] == data1
     @test img.data[2] == data2
+    close(f)
     rm(fname, force = true)
 end
 
@@ -179,10 +183,12 @@ end
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
 
-    img = AstroImage(Gray, FITS(fname), (1,2))
+    f = FITS(fname)
+    img = AstroImage(Gray, f, (1,2))
     @test length(img.wcs) == 2
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
+    close(f)
     rm(fname,force = true)
 end
 
@@ -228,14 +234,20 @@ end
         WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
     @test eltype(eltype(img.data)) == Int
 
-    img = AstroImage(Gray, (FITS(fname1), FITS(fname2), FITS(fname3)), (1,1,1))
+    f1 = FITS(fname1)
+    f2 = FITS(fname2)
+    f3 = FITS(fname3)
+    img = AstroImage(Gray, (f1, f2, f3), (1,1,1))
     @test length(img.data) == length(img.wcs) == 3
     @test img.data[1] == indata1
     @test img.data[2] == indata2
     @test img.data[3] == indata3
     @test WCS.to_header(img.wcs[1]) == WCS.to_header(img.wcs[2]) == 
-        WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(FITS(fname1)[1], String))[1])
+        WCS.to_header(img.wcs[3]) == WCS.to_header(WCS.from_header(read_header(f1[1], String))[1])
     @test eltype(eltype(img.data)) == Int
+    close(f1)
+    close(f2)
+    close(f3)
     rm(fname1, force = true)
     rm(fname2, force = true)
     rm(fname3, force = true)
