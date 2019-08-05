@@ -246,6 +246,9 @@ end
     close(f1)
     close(f2)
     close(f3)
+    rm(fname1, force = true)
+    rm(fname2, force = true)
+    rm(fname3, force = true)
 end
 
 include("plots.jl")
