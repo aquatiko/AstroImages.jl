@@ -206,7 +206,7 @@ end
                         "this is a comment",
                         "this is a history"])
 
-    indata1 = reshape(Int64[1:100;], 5, 20)
+    indata1 = reshape(Int[1:100;], 5, 20)
     write(f, indata1; header=inhdr)
     close(f)
 
