@@ -36,7 +36,7 @@ end
         FITS(fname, "w") do f
             write(f, data)
         end
-        @test load(fname)[1] == data
+        @test load(fname, 1)[1] == data
         @test load(fname, (1, 1))[1] == (data, data)
         img = AstroImage(fname)
         rendered_img = colorview(img)
