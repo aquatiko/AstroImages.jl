@@ -109,7 +109,7 @@ Use `color` as color map, this is `Gray` by default.
 AstroImage(color::Type{<:Color}, file::String, ext::Int) =
     AstroImage(color, file, (ext,))
 AstroImage(color::Type{<:Color}, file::String, ext::NTuple{N, Int}) where {N} =
-    AstroImage(color, FITS(file), ext)
+    AstroImage(color, load(file, ext)...)
 
 AstroImage(file::String, ext::Int) = AstroImage(Gray, file, ext)
 AstroImage(file::String, ext::NTuple{N, Int}) where {N} = AstroImage(Gray, file, ext)
