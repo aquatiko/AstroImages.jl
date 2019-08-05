@@ -189,6 +189,7 @@ end
     @test WCS.to_header(img.wcs[1]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[1], String))[1])
     @test WCS.to_header(img.wcs[2]) === WCS.to_header(WCS.from_header(read_header(FITS(fname)[2], String))[1])
     close(f)
+    GC.gc()
     rm(fname,force = true)
 end
 
