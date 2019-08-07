@@ -20,8 +20,10 @@ end
                 "a48b2502ceb979dfad0d05fd5ec19bf3e197ff2d1d9c604c9340992d1bf7eec9")
     download_dep("http://chandra.harvard.edu/photo/2009/casa/fits/casa_4.0-6.0keV.fits", "casa_4.0-6.0keV.fits",
                 "15e90a14515c121c2817e97b255c604ad019c9c2340fda4fb6c5c3da55e1b0c2")
-    download_dep("https://bintray.com/aquatiko/AstroImages.jl/download_file?file_path=ccd2rgb.jld","ccd2rgb.jld",
-                "81d96742e13c07306cd8a1104ca9d6d1d67262a379e8e22a86ae14f392194a6a")
+    # download_dep("https://bintray.com/aquatiko/AstroImages.jl/download_file?file_path=ccd2rgb.jld","ccd2rgb.jld",
+    #             "81d96742e13c07306cd8a1104ca9d6d1d67262a379e8e22a86ae14f392194a6a")
+    download_dep("https://bintray.com/aquatiko/AstroImages.jl/download_file?file_path=ccd2rgb_rounded.jld","ccd2rgb_rounded.jld",
+                "b938d19e0c52f53d9be15ae155c9f12422fa81f1e911111c7ee9a8684e554bd6")
         
     r = FITS(joinpath("data","casa_0.5-1.5keV.fits"))[1]
     b = FITS(joinpath("data","casa_1.5-3.0keV.fits"))[1]
@@ -29,8 +31,8 @@ end
     linear_res = RGB.(ccd2rgb(r, b, g, shape_out = (1000,1000)))
     asinh_res = RGB.(ccd2rgb(r, b, g, shape_out = (1000,1000), stretch = asinh))
     
-    linear_ans = load(joinpath("data","ccd2rgb.jld"), "linear")
-    asinh_ans = load(joinpath("data","ccd2rgb.jld"), "asinh")
+    linear_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "linear")
+    asinh_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "asinh")
 
     function check_diff(arr1,arr2,rtol)
         count = 0
