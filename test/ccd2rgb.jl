@@ -31,14 +31,14 @@ end
     g = FITS(joinpath("data","casa_4.0-6.0keV.fits"))[1]
     linear_res = ccd2rgb(r, b, g, shape_out = (1000,1000))
     asinh_res = ccd2rgb(r, b, g, shape_out = (1000,1000), stretch = asinh)
-    linear_res = f.(RGB.(colorview(RGB, round.(red.(linear_res), digits = 10), round.(green.(linear_res), digits = 10), 
-                                    round.(blue.(linear_res), digits = 10))))
-    asinh_ans = f.(RGB.(colorview(RGB, round.(red.(asinh_res), digits = 10), round.(green.(asinh_res), digits = 10), 
-                                    round.(blue.(asinh_res), digits = 10))))
+    linear_res = f.(RGB.(colorview(RGB, round.(red.(linear_res), digits = 8), round.(green.(linear_res), digits = 8), 
+                                    round.(blue.(linear_res), digits = 8))))
+    asinh_ans = f.(RGB.(colorview(RGB, round.(red.(asinh_res), digits = 8), round.(green.(asinh_res), digits = 8), 
+                                    round.(blue.(asinh_res), digits = 8))))
     
 
-    linear_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "linear")
-    asinh_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "asinh")
+    linear_ans = f.(load(joinpath("data","ccd2rgb_rounded.jld"), "linear"))
+    asinh_ans = f.(load(joinpath("data","ccd2rgb_rounded.jld"), "asinh"))
 
     function check_diff(arr1,arr2,rtol)
         count = 0
@@ -53,11 +53,11 @@ end
         return iszero(count)
     end
 
-    @test check_diff(red.(linear_res), red.(linear_ans),1e-7)
-    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 1e-7)
-    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 1e-7)
+    @test check_diff(red.(linear_res), red.(linear_ans),1e-6)
+    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 1e-6)
+    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 1e-6)
 
-    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 1e-7)
-    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 1e-7)
-    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 1e-7)
+    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 1e-6)
+    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 1e-6)
+    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 1e-6)
 end
