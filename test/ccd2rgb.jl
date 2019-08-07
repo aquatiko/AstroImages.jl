@@ -53,11 +53,11 @@ end
         return iszero(count)
     end
 
-    @test check_diff(red.(linear_res), red.(linear_ans),1e-6)
-    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 1e-6)
-    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 1e-6)
+    @test check_diff(red.(linear_res), red.(linear_ans),3e-5)
+    @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 3e-5)
+    @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 3e-5)
 
-    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 1e-6)
-    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 1e-6)
-    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 1e-6)
+    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 3e-5)
+    @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 3e-5)
+    @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 3e-5)
 end
