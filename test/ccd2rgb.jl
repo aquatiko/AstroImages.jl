@@ -33,7 +33,7 @@ end
     asinh_res = ccd2rgb(r, b, g, shape_out = (1000,1000), stretch = asinh)
     linear_res = f.(RGB.(colorview(RGB, round.(red.(linear_res), digits = 8), round.(green.(linear_res), digits = 8), 
                                     round.(blue.(linear_res), digits = 8))))
-    asinh_ans = f.(RGB.(colorview(RGB, round.(red.(asinh_res), digits = 8), round.(green.(asinh_res), digits = 8), 
+    asinh_res = f.(RGB.(colorview(RGB, round.(red.(asinh_res), digits = 8), round.(green.(asinh_res), digits = 8), 
                                     round.(blue.(asinh_res), digits = 8))))
     
 
