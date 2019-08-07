@@ -25,15 +25,17 @@ end
     download_dep("https://bintray.com/aquatiko/AstroImages.jl/download_file?file_path=ccd2rgb_rounded.jld","ccd2rgb_rounded.jld",
                 "5191e59e527c3667486c680e92c8f77fcdbed1e82d3230317a514d928092107d")
         
+    f(x) = isnan(x) ? RGB.(0.0,0.0,0.0) : x
     r = FITS(joinpath("data","casa_0.5-1.5keV.fits"))[1]
     b = FITS(joinpath("data","casa_1.5-3.0keV.fits"))[1]
     g = FITS(joinpath("data","casa_4.0-6.0keV.fits"))[1]
     linear_res = ccd2rgb(r, b, g, shape_out = (1000,1000))
     asinh_res = ccd2rgb(r, b, g, shape_out = (1000,1000), stretch = asinh)
-    linear_res = RGB.(colorview(RGB, round.(red.(linear_res), digits = 6), round.(green.(linear_res), digits = 6), 
-                                    round.(blue.(linear_res), digits = 6)))
-    asinh_ans = RGB.(colorview(RGB, round.(red.(asinh_res), digits = 6), round.(green.(asinh_res), digits = 6), 
-                                    round.(blue.(asinh_res), digits = 6)))
+    linear_res = f.(RGB.(colorview(RGB, round.(red.(linear_res), digits = 10), round.(green.(linear_res), digits = 10), 
+                                    round.(blue.(linear_res), digits = 10))))
+    asinh_ans = f.(RGB.(colorview(RGB, round.(red.(asinh_res), digits = 10), round.(green.(asinh_res), digits = 10), 
+                                    round.(blue.(asinh_res), digits = 10))))
+    
 
     linear_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "linear")
     asinh_ans = load(joinpath("data","ccd2rgb_rounded.jld"), "asinh")
