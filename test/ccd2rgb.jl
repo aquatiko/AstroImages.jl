@@ -57,7 +57,7 @@ end
     @test isapprox(blue.(linear_res), blue.(linear_ans), nans = true, rtol = 3e-5)
     @test isapprox(green.(linear_res), green.(linear_ans), nans = true, rtol = 3e-5)
 
-    @test isapprox(red.(asinh_res), red.(asinh_ans), nans = true, rtol = 3e-5)
+    @test check_diff(red.(asinh_res), red.(asinh_ans),3e-5)
     @test isapprox(blue.(asinh_res), blue.(asinh_ans), nans = true, rtol = 3e-5)
     @test isapprox(green.(asinh_res), green.(asinh_ans), nans = true, rtol = 3e-5)
 end
